@@ -1,12 +1,11 @@
 import React from 'react'
 
-const ToDo = () => {
+const NotFound = () => {
     return (
         <div>
-              
-          todo  
+            Not Found
         </div>
     )
 }
 
-export default ToDo
+export default NotFound

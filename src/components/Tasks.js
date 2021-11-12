@@ -180,7 +180,9 @@ const Tasks = () => {
     )
 
     return (
+        
         <div className={classes.task}>
+            
             <Button 
             style={{
                 backgroundColor: '#00f',
@@ -208,7 +210,7 @@ const Tasks = () => {
                                 <TableCell>{task.created_at}</TableCell>
                                 <TableCell>
                                     <Edit style={{cursor: "pointer"}} onClick={()=>selectTask(task, 'Edit')} />&nbsp;&nbsp;&nbsp;
-                                    <Delete style={{cursor: "pointer"}} onClick={()=>selectTask(task, 'Delete')} />
+                                    <Delete style={{cursor: "pointer"}} onClick={()=>selectTask(task, 'Delete')} style={{color: '#f00'}} />
                                 </TableCell>
                             </TableRow>       
                         ))

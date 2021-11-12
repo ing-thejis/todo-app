@@ -2,8 +2,8 @@ import React from 'react'
 
 const Doing = () => {
     return (
-        <div>
-           doing 
+        <div>       
+              doing 
         </div>
     )
 }
