@@ -1,34 +1,46 @@
 {
-    "task":[
-        {
-            "id": 1,
-            "title": "task 1",
-            "description": "tarea 1",
-            "created_at": "11-11-2021"
-        }
-    ],
-    "todo":[
-        {
-            "id": 1,
-            "title": "todo 1",
-            "description": "para hacer 1",
-            "created_at": "11-11-2021"
-        }
-    ],
-    "doing":[
-        {
-            "id": 1,
-            "title": "doing 1",
-            "description": "haciendo 1",
-            "created_at": "11-11-2021"
-        }
-    ],
-    "done":[
-        {
-            "id": 1,
-            "title": "done 1",
-            "description": "hecho 1",
-            "created_at": "11-11-2021"
-        }
-    ]
+  "task": [
+    {
+      "id": 1,
+      "title": "task one",
+      "description": "esta es la tarea 1",
+      "created_at": "2021-11-11"
+    },
+    {
+      "id": "3",
+      "title": "tarea 3",
+      "description": "estas es una nueva tarea  llamada tarea 3",
+      "created_at": "2021-11-15"
+    },
+    {
+      "id": "2",
+      "title": "task two",
+      "description": "this is a new task",
+      "created_at": "2021-11-16"
+    }
+  ],
+  "todo": [
+    {
+      "id": 1,
+      "title": "todo 1",
+      "description": "para hacer 1",
+      "created_at": "11-11-2021"
+    }
+  ],
+  "doing": [
+    {
+      "id": 1,
+      "title": "doing 1",
+      "description": "haciendo 1",
+      "created_at": "11-11-2021"
+    }
+  ],
+  "done": [
+    {
+      "id": 1,
+      "title": "done 1",
+      "description": "hecho 1",
+      "created_at": "11-11-2021"
+    }
+  ]
 }

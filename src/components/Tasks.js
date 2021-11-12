@@ -11,14 +11,17 @@ const Tasks = () => {
     const classes = useStyles()
 
     const [data, setData] = useState([]);
-    const [statusModal, setStatusModal] = useState(false)
+    const [modalInsert, setModalInsert] = useState(false)
+    const [modalEdit, setModalEdit] = useState(false)
+    const [modalDelete, setModalDelete] = useState(false)
+
     const date = new Date()
 
     const [taskSelect, setTaskSelect] = useState({
         id: "",
         title: "",
         description: "",
-        date: ""
+        created_at: ""
     })
 
     const handleChange = e => {
@@ -31,7 +34,15 @@ const Tasks = () => {
     }
 
     const openCloseModalInsert = () => {
-        setStatusModal(!statusModal)
+        setModalInsert(!modalInsert)
+    }
+
+    const openCloseModalEdit = () => {
+        setModalEdit(!modalEdit)
+    }
+
+    const openCloseModalDelete = () => {
+        setModalDelete(!modalDelete)
     }
 
     const requestGET = async () => {
@@ -51,14 +62,52 @@ const Tasks = () => {
             openCloseModalInsert()
         })
     }
+
+    const requestPUT = async () => {
+        await axios.put(baseURL+taskSelect.id, taskSelect)
+        .then(response => {
+            var newData = data;
+            newData.map(task => {
+                if(taskSelect.id === task.id) {
+                    task.title = taskSelect.title
+                    task.description = taskSelect.description
+                    task.created_at = taskSelect.created_at
+                }
+            })
+            setData(newData)
+            openCloseModalEdit();
+        })
+    }
+
+    const requestDEL = async () => {
+        await axios.delete(baseURL+taskSelect.id)
+        .then(response=>{
+            setData(data.filter(task=>task.id!==taskSelect.id))
+            openCloseModalDelete()
+        })
+    }
   
+    const selectTask = (task, caso) => {
+        setTaskSelect(task)
+        switch (caso) {
+            case 'Edit':
+                setModalEdit(true)     
+                break;
+            case 'Delete':
+                setModalDelete(true)
+                break;
+            default:
+                break;
+        } 
+    }
+
     useEffect(() => {
       requestGET();
       document.title = "Task"
     }, [])
 
     const bodyInsert = (
-        <div className={classes.modalInsert}>
+        <div className={classes.modal}>
             <h1>Insert New Task</h1>
             <TextField className={classes.InputField} name="id" label="ID" type="text" onChange={handleChange} />
             <TextField className={classes.InputField} name="title" label="Title" type="text" onChange={handleChange} />
@@ -72,30 +121,72 @@ const Tasks = () => {
             />
             <br />
             <br />
-            {/* <TextField
-                className={classes.InputField}
-                name="date"
-                type="date"
-                defaultValue={date.getTime()}
-                onChange={handleChange}
-            /> */}
             <TextField
                 className={classes.InputField}
-                name="date"
-                label="date"
+                name="created_at" label="date" type="date"
+                defaultValue={date.getTime()}
                 onChange={handleChange}
             />
             <br />
             <br />
             <div>
-                <Button className={classes.btn} onCLick={()=>requestPOST()} >Create</Button>
+                <Button className={classes.btn} onClick={()=>requestPOST()} >Create</Button>
                 <Button className={classes.btn} onClick={()=>openCloseModalInsert()}>Cancel</Button>
             </div>
         </div>
     )
+
+    const bodyEdit = (
+        <div className={classes.modal}>
+            <h1>Edit Task {taskSelect.id}</h1>
+            <TextField className={classes.InputField} name="id" label="ID" type="text" onChange={handleChange} value={taskSelect && taskSelect.id} />
+            <TextField className={classes.InputField} name="title" label="Title" type="text" onChange={handleChange} value={taskSelect && taskSelect.title} />
+            <TextField 
+                className={classes.InputField}
+                name="description"
+                label="Description"
+                multiline
+                maxRows={4} 
+                onChange={handleChange}
+                value={taskSelect && taskSelect.description}
+            />
+            <br />
+            <br />
+            <TextField
+                className={classes.InputField}
+                name="created_at" label="date" type="date"
+                defaultValue={date.getTime()}
+                onChange={handleChange}
+                value={taskSelect && taskSelect.created_at}
+            />
+            <br />
+            <br />
+            <div>
+                <Button className={classes.btn} onClick={()=>requestPUT()} >Edit</Button>
+                <Button className={classes.btn} onClick={()=>openCloseModalEdit()}>Cancel</Button>
+            </div>
+        </div>
+    )
+
+    const bodyDelete = (
+        <div className={classes.modal}>
+            <p>Delete task <b>{taskSelect && taskSelect.title}</b> ?</p>
+            
+            <div>
+                <Button className={classes.btn} onClick={()=>requestDEL()} style={{backgroundColor: '#f00', color: '#fff'}}>Acept</Button>
+                <Button className={classes.btn} onClick={()=>openCloseModalDelete()}>Cancel</Button>
+            </div>
+        </div>
+    )
+
     return (
         <div className={classes.task}>
-            <Button onClick={openCloseModalInsert} >Create</Button>
+            <Button 
+            style={{
+                backgroundColor: '#00f',
+                color: '#fff'
+            }}
+            onClick={openCloseModalInsert} >Create</Button>
 
             <TableContainer>
                 <Table>
@@ -115,7 +206,10 @@ const Tasks = () => {
                                 <TableCell>{task.title}</TableCell>
                                 <TableCell>{task.description}</TableCell>
                                 <TableCell>{task.created_at}</TableCell>
-                                <TableCell><Edit /><Delete /></TableCell>
+                                <TableCell>
+                                    <Edit style={{cursor: "pointer"}} onClick={()=>selectTask(task, 'Edit')} />&nbsp;&nbsp;&nbsp;
+                                    <Delete style={{cursor: "pointer"}} onClick={()=>selectTask(task, 'Delete')} />
+                                </TableCell>
                             </TableRow>       
                         ))
 
@@ -123,11 +217,15 @@ const Tasks = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Modal
-                open={statusModal}
-                onClose={openCloseModalInsert}>
+            <Modal open={modalInsert} onClose={openCloseModalInsert}>
                 {bodyInsert}
             </Modal>
+            <Modal open={modalEdit} onClose={openCloseModalEdit}>
+                {bodyEdit}
+            </Modal>  
+            <Modal open={modalDelete} onClose={openCloseModalDelete}>
+                {bodyDelete}
+            </Modal>          
         </div>
     )
 }
@@ -135,7 +233,7 @@ const Tasks = () => {
 export default Tasks
 
 const useStyles = makeStyles((theme)=>({
-    modalInsert: {
+    modal: {
         position: 'absolute',
         width: 400,
         backgroundColor: theme.palette.background.paper,
